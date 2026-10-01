@@ -1,0 +1,72 @@
+Project Proposal: SmartVault Agri-WMS
+Intelligent Warehouse Management & Electronic Warehouse Receipt System (e-WRS)
+Prepared By: Engineering Team
+Target Deployment: Ghana (Ashanti, Bono, Ahafo, and Northern Agricultural Belts)
+Document Version: 1.0
+1. Executive Summary
+In response to agricultural shifts towards national food reserves, regional commodity aggregation, and decentralized storage networks across West Africa, post-harvest infrastructure requires modern digital enablement. Sub-Saharan Africa loses between 15% and 40% of staple crop yields annually due to inadequate post-harvest handling, unmonitored silo conditions, and inefficient market linkages. Furthermore, smallholder farmers face liquidity crunches at harvest, forcing distress sales at depressed prices.
+SmartVault Agri-WMS is a specialized, offline-first Warehouse Management System integrated with an Electronic Warehouse Receipt System (e-WRS) and IoT telemetry. It provides agricultural aggregators, state warehousing boards, and cooperative grain reserves with end-to-end operational visibility: from gate intake and moisture/grade verification to real-time microclimate silo monitoring and collateralized digital receipts for financial inclusion.
+2. Problem Statement
+Modern bulk storage facilities (handling maize, cereals, tubers, and legumes) encounter three operational bottlenecks:
+Information Asymmetry & Quality Disputes: Inconsistent manual grading at intake points leads to disputes between aggregators and farmers regarding moisture content, foreign matter, and grade categorization.
+Spoilage & Storage Losses: Storage silos and barns lack continuous environmental monitoring, allowing hot spots, moisture accumulation, and pest infestations to damage large batches unnoticed.
+Liquidity Traps for Smallholders: Farmers cannot easily leverage stored inventory as collateral because conventional financial institutions lack verifiable, tamper-evident visibility into stored stock volumes and quality.
+3. Proposed Solution Architecture
+SmartVault Agri-WMS operates as an integrated three-tier platform:
+Intake & Grading Module (Edge-Enabled PWA): An offline-first Progressive Web App utilized by intake officers to weigh incoming hauls, capture laboratory moisture readings, assign official grade classifications (Grade 1 to Grade 3), and print QR-coded batch tags.
+IoT Telemetry & Ambient Monitoring Engine: Low-power environmental sensor nodes deployed throughout warehouse zones transmitting real-time temperature and relative humidity metrics over MQTT to prevent spoilage and trigger predictive aeration alerts.
+Digital Warehouse Receipt System (e-WRS) & Collateral Registry: A cryptographically signed digital receipt engine providing farmers and partnering financial institutions with verified proof of ownership, batch quality grade, and current market valuations.
+4. Detailed Technical Architecture
+The system is built on an event-driven, micro-service architecture optimized for variable connectivity in rural and peri-urban hubs.
+Layer
+Technology Stack
+Functional Responsibility
+ 
+Frontend Client
+Next.js 14, TypeScript, Tailwind CSS, Workbox (PWA)
+Intake terminal, inventory spatial map, operator dashboard, and offline IndexedDB sync.
+Core Backend
+Django REST Framework (DRF) / Python 3.11
+Business logic, authentication, ledger management, e-WRS issuance, and audit logs.
+Database & Storage
+PostgreSQL 16, PostGIS, TimescaleDB, Redis
+Relational entities, spatial facility mappings, time-series sensor telemetry, and distributed caching.
+IoT Ingestion Pipeline
+Eclipse Mosquitto (MQTT), Celery Workers
+Subscribes to warehouse ambient sensor topics; parses telemetry payloads into time-series buckets.
+Farmer Gateway
+USSD / SMS API (Africa's Talking / Twilio)
+Enables non-smartphone smallholders to verify receipt balances, check market prices, and request releases.
+
+5. Core Data Model & Schema Overview
+The core relational schema balances strict traceability with high transaction throughput:
+CommodityType: Defines commodity taxonomy (Maize, Soya, Cowpea, Paddy Rice) and acceptable physical grading thresholds (maximum moisture percentage, foreign matter tolerance).
+Warehouse & Bin: Hierarchical physical facility hierarchy with 3D capacity limits and zone designations.
+IntakeConsignment: Captures gross/tare weights, moisture testing readings, foreign matter percentage, and resulting grade certification.
+WarehouseReceipt: Cryptographically hashed certificate representing ownership, status (Issued, Pledged, Released, Void), and lien holder associations.
+TelemetryMetric: Time-series logging of internal ambient temperature, external ambient temperature, and relative humidity.
+6. Implementation Phases & Milestones
+The development lifecycle is divided into four distinct 6-week milestones:
+Phase
+Deliverables
+Duration
+ 
+Phase 1: Foundation & Intake Engine
+Core Django data schemas, PWA intake terminal, offline sync engine, QR label generation.
+Weeks 1 - 6
+Phase 2: IoT Telemetry & Analytics
+MQTT ingestion broker, TimescaleDB configuration, sensor thresholds, real-time alerting system.
+Weeks 7 - 12
+Phase 3: e-WRS & Partner Integrations
+Cryptographic receipt issuance, financial partner API, USSD/SMS query integration for smallholders.
+Weeks 13 - 18
+Phase 4: Pilot Deployment & Hardening
+Field pilot in two regional aggregation centers, load testing, security audits, and staff training.
+Weeks 19 - 24
+
+7. Key Risk Mitigation & Operational Considerations
+Intermittent Connectivity: Storage hubs often face cellular outages. The client uses service workers and IndexedDB to cache all intake actions locally, queueing them for automatic reconciliation when the network reconnects.
+Dust and Harsh Environmental Conditions: Physical sensors must carry minimum IP65 ratings and operate via battery or solar arrays with sleep-cycle telemetry to endure seasonal humidity and dust.
+Farmer Accessibility: Because most smallholders rely on feature phones, receipt confirmation and status checks do not require web access; automated two-way USSD/SMS flows keep producers informed in real time.
+8. Conclusion & Expected Impact
+SmartVault Agri-WMS transforms commodity storage facilities into transparent, data-driven supply chain hubs. By eliminating manual grading ambiguities, monitoring grain health continuously, and unlocking liquidity through e-WRS, the platform secures critical food reserves, minimizes post-harvest loss, and creates trust between farmers, aggregators, and financial institutions.

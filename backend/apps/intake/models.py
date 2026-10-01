@@ -3,6 +3,22 @@ import json
 from django.contrib.gis.db import models
 
 
+class CommodityType(models.Model):
+    """Defines a commodity and its official grading thresholds."""
+    name                    = models.CharField(max_length=100, unique=True)
+    code                    = models.CharField(max_length=20, unique=True)
+    max_moisture_grade1     = models.DecimalField(max_digits=5, decimal_places=2, default=13.0)
+    max_moisture_grade2     = models.DecimalField(max_digits=5, decimal_places=2, default=14.0)
+    max_foreign_matter_pct  = models.DecimalField(max_digits=5, decimal_places=2, default=2.0)
+    max_broken_grains_pct   = models.DecimalField(max_digits=5, decimal_places=2, default=4.0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+
 class IntakeTransaction(models.Model):
     farmer_id = models.CharField(max_length=64, db_index=True)
     commodity = models.CharField(max_length=100)

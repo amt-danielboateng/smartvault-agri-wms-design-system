@@ -1,0 +1,56 @@
+[
+  {
+    "model": "intake.warehouse",
+    "pk": 1,
+    "fields": {
+      "name": "Tamale Central Depot",
+      "location": "SRID=4326;POINT(-0.8393 9.4008)",
+      "region": "Northern"
+    }
+  },
+  {
+    "model": "intake.warehouse",
+    "pk": 2,
+    "fields": {
+      "name": "Kumasi Grain Hub",
+      "location": "SRID=4326;POINT(-1.6236 6.6885)",
+      "region": "Ashanti"
+    }
+  },
+  {
+    "model": "intake.warehouse",
+    "pk": 3,
+    "fields": {
+      "name": "Techiman Aggregation Centre",
+      "location": "SRID=4326;POINT(-1.9333 7.5833)",
+      "region": "Bono East"
+    }
+  },
+  {
+    "model": "intake.warehouse",
+    "pk": 4,
+    "fields": {
+      "name": "Sunyani Regional Store",
+      "location": "SRID=4326;POINT(-2.3333 7.3333)",
+      "region": "Bono"
+    }
+  },
+  {
+    "model": "intake.warehouse",
+    "pk": 5,
+    "fields": {
+      "name": "Goaso Ahafo Depot",
+      "location": "SRID=4326;POINT(-2.5167 6.8000)",
+      "region": "Ahafo"
+    }
+  },
+  {
+    "model": "intake.warehouse",
+    "pk": 6,
+    "fields": {
+      "name": "Wa Northern Hub",
+      "location": "SRID=4326;POINT(-2.5000 10.0667)",
+      "region": "Upper West"
+    }
+  }
+]

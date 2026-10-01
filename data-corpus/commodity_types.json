@@ -1,0 +1,62 @@
+[
+  {
+    "model": "intake.commoditytype",
+    "pk": 1,
+    "fields": {
+      "name": "Yellow Maize",
+      "code": "YM",
+      "max_moisture_grade1": "13.0",
+      "max_moisture_grade2": "14.0",
+      "max_foreign_matter_pct": "1.0",
+      "max_broken_grains_pct": "2.0"
+    }
+  },
+  {
+    "model": "intake.commoditytype",
+    "pk": 2,
+    "fields": {
+      "name": "White Maize",
+      "code": "WM",
+      "max_moisture_grade1": "13.0",
+      "max_moisture_grade2": "14.0",
+      "max_foreign_matter_pct": "1.0",
+      "max_broken_grains_pct": "2.0"
+    }
+  },
+  {
+    "model": "intake.commoditytype",
+    "pk": 3,
+    "fields": {
+      "name": "Soybeans",
+      "code": "SB",
+      "max_moisture_grade1": "12.0",
+      "max_moisture_grade2": "13.0",
+      "max_foreign_matter_pct": "1.0",
+      "max_broken_grains_pct": "3.0"
+    }
+  },
+  {
+    "model": "intake.commoditytype",
+    "pk": 4,
+    "fields": {
+      "name": "Paddy Rice",
+      "code": "PR",
+      "max_moisture_grade1": "14.0",
+      "max_moisture_grade2": "15.0",
+      "max_foreign_matter_pct": "2.0",
+      "max_broken_grains_pct": "5.0"
+    }
+  },
+  {
+    "model": "intake.commoditytype",
+    "pk": 5,
+    "fields": {
+      "name": "Sorghum",
+      "code": "SG",
+      "max_moisture_grade1": "13.0",
+      "max_moisture_grade2": "14.0",
+      "max_foreign_matter_pct": "2.0",
+      "max_broken_grains_pct": "4.0"
+    }
+  }
+]

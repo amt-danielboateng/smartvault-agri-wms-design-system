@@ -18,7 +18,8 @@ celery_app = Celery("mqtt_bridge", broker=REDIS_URL)
 
 @celery_app.task(name="apps.telemetry.tasks.persist_reading")
 def persist_reading(payload: dict):
-    pass  # Implemented in backend telemetry app
+    """Proxy task — real implementation lives in backend apps.telemetry.tasks."""
+    pass
 
 
 def on_connect(client, userdata, flags, rc):

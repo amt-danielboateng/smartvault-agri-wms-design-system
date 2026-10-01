@@ -1,12 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Figma sync pipeline outputs — rebuilt on every token push */
 @import "../styles/tokens.light.css";
 @import "../styles/tokens.dark.css";
 
 @layer base {
-  * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  * { @apply border-border box-border; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .font-mono { font-family: "JetBrains Mono", monospace; }
+}
+
+@layer utilities {
+  /* App header — dark forest green bar */
+  .bg-header { background-color: hsl(157 64% 14%); }
+  /* Sidebar — dark pine */
+  .bg-sidebar { background-color: hsl(157 64% 10%); }
+  /* Subtle row hover */
+  .hover-row:hover { background-color: hsl(var(--color-muted)); }
 }

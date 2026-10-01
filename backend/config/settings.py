@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_spectacular",
     "apps.intake",
     "apps.telemetry",
@@ -63,9 +64,20 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME":  timedelta(hours=8),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS":  True,
+    "AUTH_HEADER_TYPES":      ("Bearer",),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -81,6 +93,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MQTT_HOST = env("MQTT_HOST", default="mosquitto")
 MQTT_PORT = env.int("MQTT_PORT", default=8883)
 MQTT_USE_TLS = env.bool("MQTT_USE_TLS", default=True)
+
+WAREHOUSE_MANAGER_PHONE = env("WAREHOUSE_MANAGER_PHONE", default="")
 
 AFRICASTALKING_USERNAME = env("AT_USERNAME", default="")
 AFRICASTALKING_API_KEY = env("AT_API_KEY", default="")
