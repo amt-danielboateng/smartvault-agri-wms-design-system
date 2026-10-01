@@ -1,0 +1,16 @@
+{
+  "name": "smartvault-token-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Figma → Style Dictionary → Tailwind token sync pipeline",
+  "scripts": {
+    "build": "node sd.config.js",
+    "watch": "nodemon --watch ../../tokens --ext json --exec npm run build"
+  },
+  "dependencies": {
+    "style-dictionary": "^4.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
