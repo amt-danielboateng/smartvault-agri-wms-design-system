@@ -1,4 +1,4 @@
-const StyleDictionary = require("style-dictionary");
+const StyleDictionary = require("style-dictionary").default;
 const hslTransform = require("./transforms/hsl");
 
 const TOKENS_DIR = "../../tokens";
