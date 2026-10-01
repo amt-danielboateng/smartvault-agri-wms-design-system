@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: scripts/sync-tokens/package.json
+          cache-dependency-path: scripts/sync-tokens/package-lock.json
 
       - name: Install Style Dictionary
         working-directory: scripts/sync-tokens
