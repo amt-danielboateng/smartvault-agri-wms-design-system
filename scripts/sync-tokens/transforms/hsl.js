@@ -30,8 +30,8 @@ function hexToHsl(hex) {
 module.exports = {
   name: "color/hsl-channels",
   type: "value",
-  matcher: (token) => token.attributes?.category === "color",
-  transformer: (token) => {
+  filter: (token) => token.attributes?.category === "color",
+  transform: (token) => {
     const val = token.original.value;
     if (typeof val === "string" && val.startsWith("#")) return hexToHsl(val);
     // Pass through already-transformed references
