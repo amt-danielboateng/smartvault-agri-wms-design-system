@@ -4,6 +4,8 @@ djangorestframework==3.15.2
 drf-spectacular==0.27.2
 django-environ==0.11.2
 djangorestframework-simplejwt==5.3.1
+django-prometheus==2.3.1
+django-prometheus==2.3.1
 
 # Database
 psycopg2-binary==2.9.9
@@ -16,6 +18,7 @@ django.contrib.gis  # requires PostGIS
 celery==5.4.0
 redis==5.0.8
 django-redis==5.4.0
+django-celery-beat==2.6.0
 
 # MQTT
 paho-mqtt==2.1.0

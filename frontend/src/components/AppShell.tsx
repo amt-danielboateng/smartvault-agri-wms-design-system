@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui";
 import { useOfflineSync } from "@/lib/useOfflineSync";
+import { useAuth } from "@/lib/auth";
 
 const NAV = [
   { href: "/intake",    label: "Gate Intake",    short: "Intake",    Icon: Wheat },
@@ -17,6 +18,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [online, setOnline] = useState(true);
   const { pending, syncStatus, flush } = useOfflineSync();
+  const { username } = useAuth();
+
+  const initials = username
+    ? username.slice(0, 2).toUpperCase()
+    : "??";
+  const depot = username
+    ? `${username.charAt(0).toUpperCase()}${username.slice(1)} Depot`
+    : "Select Depot";
 
   useEffect(() => {
     const update = () => setOnline(navigator.onLine);
@@ -98,7 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* Depot selector */}
             <button className="hidden md:flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs text-white hover:bg-white/15 transition-colors">
               <MapPin className="h-3 w-3 text-white/70" />
-              Tamale Central Depot
+              {depot}
               <ChevronDown className="h-3 w-3 text-white/50" />
             </button>
 
@@ -119,7 +128,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             {/* Avatar */}
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold select-none">
-              AK
+              {initials}
             </div>
           </div>
         </header>

@@ -1,0 +1,8 @@
+{
+  "silo_id":       "silo-A01",
+  "wifi_ssid":     "WarehouseNet_Tamale",
+  "wifi_password": "change-me",
+  "mqtt_host":     "mosquitto",
+  "mqtt_port":     8883,
+  "interval_s":    30
+}

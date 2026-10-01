@@ -4,7 +4,7 @@ import { CheckCircle2, Printer, AlertTriangle } from "lucide-react";
 import { Button, Badge, Card, CardHeader, CardTitle, CardContent, Select, Toggle, Separator } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
-import { apiFetch } from "@/lib/auth";
+import { apiFetch, useAuth } from "@/lib/auth";
 import QRCode from "qrcode";
 
 const COMMODITIES = [
@@ -97,6 +97,7 @@ function QualityField({ label, value, onChange, max }: {
 }
 
 export default function IntakePage() {
+  const { username } = useAuth();
   const [commodity, setCommodity] = useState("yellow-maize");
   const [gross, setGross]         = useState("32480");
   const [tare, setTare]           = useState("8220");
@@ -119,7 +120,7 @@ export default function IntakePage() {
 
   const handleRecord = useCallback(async () => {
     const payload = {
-      farmer_id:        "GATE-02",
+      farmer_id:        username ?? "UNKNOWN",
       commodity,
       weight_kg:        net,
       moisture_percent: moistureNum,
@@ -144,7 +145,7 @@ export default function IntakePage() {
     }
 
     const id = await db.intakeTransactions.add({
-      farmerId:        "GATE-02",
+      farmerId:        username ?? "UNKNOWN",
       commodity,
       weightKg:        net,
       moisturePercent: moistureNum,
@@ -160,13 +161,28 @@ export default function IntakePage() {
     <div className="flex flex-col h-full min-h-[calc(100vh-48px)]">
       {/* Page header */}
       <div className="px-4 md:px-6 pt-5 pb-4 border-b border-border">
-        <p className="text-[11px] font-semibold text-primary uppercase tracking-widest mb-1">Screen A · New Consignment</p>
-        <h1 className="text-2xl md:text-3xl font-black text-foreground leading-tight">
-          Offline-First Gate Intake &amp; Produce Grading Terminal
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Weighbridge capture, grading, allocation, and print-ready evidence in one resilient workflow.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-semibold text-primary uppercase tracking-widest mb-1">Screen A · New Consignment</p>
+            <h1 className="text-2xl md:text-3xl font-black text-foreground leading-tight">
+              Offline-First Gate Intake &amp; Produce Grading Terminal
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Weighbridge capture, grading, allocation, and print-ready evidence in one resilient workflow.
+            </p>
+          </div>
+          {/* Session info block — top right */}
+          <div className="hidden lg:flex flex-col items-end shrink-0 text-right">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Local Session</span>
+            <span className="font-mono text-sm font-bold text-foreground">{username ?? "—"}</span>
+            <span className="font-mono text-xs text-muted-foreground">
+              {new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }).toUpperCase()}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">
+              {new Date().toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" })}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Two-column body */}

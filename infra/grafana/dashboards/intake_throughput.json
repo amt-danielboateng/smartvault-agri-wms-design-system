@@ -1,0 +1,113 @@
+{
+  "uid": "smartvault-intake",
+  "title": "SmartVault — Intake & API Throughput",
+  "tags": ["smartvault", "intake"],
+  "timezone": "Africa/Accra",
+  "refresh": "5m",
+  "time": { "from": "now-7d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total Consignments (7 days)",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(*) FROM intake_intaketransaction WHERE timestamp > NOW() - INTERVAL '7 days'",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Total Tonnage Received (7 days)",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT ROUND((SUM(weight_kg)/1000)::numeric, 1) FROM intake_intaketransaction WHERE timestamp > NOW() - INTERVAL '7 days'",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 } }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Receipts Issued (7 days)",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(*) FROM receipts_warehousereceipt WHERE issued_at > NOW() - INTERVAL '7 days'",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Active Pledges",
+      "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(*) FROM receipts_warehousereceipt WHERE lien_status = 'PLEDGED'",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "thresholds": {
+          "steps": [
+            { "color": "green", "value": 0 },
+            { "color": "orange", "value": 5 }
+          ]
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Daily Consignment Volume (tonnes)",
+      "gridPos": { "x": 0, "y": 4, "w": 16, "h": 8 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT DATE_TRUNC('day', timestamp) AS time, SUM(weight_kg)/1000 AS value FROM intake_intaketransaction WHERE $__timeFilter(timestamp) GROUP BY 1 ORDER BY 1",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "displayName": "Tonnes" } }
+    },
+    {
+      "id": 6,
+      "type": "piechart",
+      "title": "Commodity Breakdown (7 days)",
+      "gridPos": { "x": 16, "y": 4, "w": 8, "h": 8 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT commodity AS metric, SUM(weight_kg)/1000 AS value FROM intake_intaketransaction WHERE timestamp > NOW() - INTERVAL '7 days' GROUP BY commodity ORDER BY value DESC",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Django API Request Rate (req/s)",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 7 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(django_http_requests_total_by_method_total[1m])",
+          "legendFormat": "{{method}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    }
+  ]
+}

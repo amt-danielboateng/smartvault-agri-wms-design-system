@@ -3,8 +3,8 @@ from celery.utils.log import get_task_logger
 
 logger = get_task_logger(__name__)
 
-SPOILAGE_TEMP_C  = 30.0   # °C — grain core threshold
-SPOILAGE_RH_PCT  = 75.0   # % — relative humidity threshold
+SPOILAGE_TEMP_C  = 30.0
+SPOILAGE_RH_PCT  = 75.0
 
 
 @shared_task(name="apps.telemetry.tasks.persist_reading", bind=True, max_retries=3)
@@ -32,7 +32,7 @@ def check_spoilage_thresholds(silo_id: str, temperature_c: float, humidity_perce
     """Send SMS alert to warehouse manager when a reading breaches spoilage thresholds."""
     breaches = []
     if temperature_c > SPOILAGE_TEMP_C:
-        breaches.append(f"Temp {temperature_c}°C > {SPOILAGE_TEMP_C}°C limit")
+        breaches.append(f"Temp {temperature_c}\u00b0C > {SPOILAGE_TEMP_C}\u00b0C limit")
     if humidity_percent > SPOILAGE_RH_PCT:
         breaches.append(f"RH {humidity_percent}% > {SPOILAGE_RH_PCT}% limit")
 
@@ -54,3 +54,36 @@ def check_spoilage_thresholds(silo_id: str, temperature_c: float, humidity_perce
     )
     send_sms_receipt.delay(manager_phone, message)
     logger.warning("Spoilage alert dispatched for silo %s: %s", silo_id, breaches)
+
+
+@shared_task(name="apps.telemetry.tasks.scan_all_silos_for_spoilage")
+def scan_all_silos_for_spoilage():
+    """
+    Celery beat task — runs every 15 minutes.
+    Fetches the latest reading per silo and checks thresholds.
+    Catches silent sensors that stop publishing MQTT messages.
+    """
+    from django.db.models import Max
+    from .models import SiloSensorReading
+
+    # Get the most recent reading time per silo
+    latest_times = (
+        SiloSensorReading.objects
+        .values("silo_id")
+        .annotate(latest=Max("time"))
+    )
+
+    for entry in latest_times:
+        reading = (
+            SiloSensorReading.objects
+            .filter(silo_id=entry["silo_id"], time=entry["latest"])
+            .first()
+        )
+        if reading:
+            check_spoilage_thresholds(
+                silo_id=reading.silo_id,
+                temperature_c=reading.temperature_c,
+                humidity_percent=reading.humidity_percent,
+            )
+
+    logger.info("Spoilage scan complete — checked %d silos", len(latest_times))

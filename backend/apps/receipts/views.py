@@ -30,9 +30,8 @@ class PledgeSerializer(serializers.Serializer):
 
 
 class WarehouseReceiptViewSet(ModelViewSet):
-    queryset           = WarehouseReceipt.objects.select_related("transaction__warehouse").all()
-    serializer_class   = WarehouseReceiptSerializer
-    filterset_fields   = ["lien_status", "transaction__commodity"]
+    queryset         = WarehouseReceipt.objects.select_related("transaction__warehouse").all()
+    serializer_class = WarehouseReceiptSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()

@@ -1,21 +1,18 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { db, type IntakeTransaction } from "@/lib/db";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+import { apiFetch } from "@/lib/auth";
 
 async function pushTransaction(tx: IntakeTransaction): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE}/api/intake/transactions/`, {
+    const res = await apiFetch("/api/intake/transactions/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify({
-        farmer_id:       tx.farmerId,
-        commodity:       tx.commodity,
-        weight_kg:       tx.weightKg,
+        farmer_id:        tx.farmerId,
+        commodity:        tx.commodity,
+        weight_kg:        tx.weightKg,
         moisture_percent: tx.moisturePercent,
-        warehouse:       tx.warehouseId,
+        warehouse:        tx.warehouseId,
       }),
     });
     return res.ok;
@@ -36,7 +33,7 @@ export function useOfflineSync() {
     setPending(count);
   }
 
-  async function flush() {
+  const flush = useCallback(async () => {
     if (isSyncing.current || !navigator.onLine) return;
     isSyncing.current = true;
     setSyncStatus("syncing");
@@ -62,7 +59,7 @@ export function useOfflineSync() {
       isSyncing.current = false;
       await refreshPending();
     }
-  }
+  }, []);
 
   useEffect(() => {
     refreshPending();
@@ -73,14 +70,13 @@ export function useOfflineSync() {
     window.addEventListener("online",  onOnline);
     window.addEventListener("offline", onOffline);
 
-    // Attempt flush on mount in case we're already online with queued records
     if (navigator.onLine) flush();
 
     return () => {
       window.removeEventListener("online",  onOnline);
       window.removeEventListener("offline", onOffline);
     };
-  }, []);
+  }, [flush]);
 
   return { pending, syncStatus, flush };
 }

@@ -1,0 +1,158 @@
+{
+  "uid": "smartvault-telemetry",
+  "title": "SmartVault — Silo Telemetry",
+  "tags": ["smartvault", "telemetry"],
+  "timezone": "Africa/Accra",
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Active Spoilage Anomalies",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(DISTINCT silo_id) FROM telemetry_silosensorreading WHERE time > NOW() - INTERVAL '15 minutes' AND (temperature_c > 30 OR humidity_percent > 75)",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "thresholds": {
+          "steps": [
+            { "color": "green", "value": 0 },
+            { "color": "orange", "value": 1 },
+            { "color": "red", "value": 3 }
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Reporting Sensors (last 15 min)",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT COUNT(DISTINCT silo_id) FROM telemetry_silosensorreading WHERE time > NOW() - INTERVAL '15 minutes'",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Avg Core Temperature (°C)",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT ROUND(AVG(temperature_c)::numeric, 1) FROM telemetry_silosensorreading WHERE time > NOW() - INTERVAL '15 minutes'",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "thresholds": {
+          "steps": [
+            { "color": "green",  "value": 0 },
+            { "color": "orange", "value": 27 },
+            { "color": "red",    "value": 30 }
+          ]
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Avg Relative Humidity (%)",
+      "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT ROUND(AVG(humidity_percent)::numeric, 1) FROM telemetry_silosensorreading WHERE time > NOW() - INTERVAL '15 minutes'",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "thresholds": {
+          "steps": [
+            { "color": "green",  "value": 0 },
+            { "color": "orange", "value": 65 },
+            { "color": "red",    "value": 75 }
+          ]
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Core Temperature per Silo — 24hr",
+      "gridPos": { "x": 0, "y": 4, "w": 24, "h": 8 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT time_bucket('15 minutes', time) AS time, silo_id AS metric, AVG(temperature_c) AS value FROM telemetry_silosensorreading WHERE $__timeFilter(time) GROUP BY 1, 2 ORDER BY 1",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "steps": [
+              { "color": "green",  "value": 0 },
+              { "color": "orange", "value": 27 },
+              { "color": "red",    "value": 30 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "table", "placement": "bottom" }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Relative Humidity per Silo — 24hr",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT time_bucket('15 minutes', time) AS time, silo_id AS metric, AVG(humidity_percent) AS value FROM telemetry_silosensorreading WHERE $__timeFilter(time) GROUP BY 1, 2 ORDER BY 1",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              { "color": "green",  "value": 0 },
+              { "color": "orange", "value": 65 },
+              { "color": "red",    "value": 75 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Latest Reading per Silo",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 7 },
+      "datasource": "TimescaleDB",
+      "targets": [
+        {
+          "rawSql": "SELECT DISTINCT ON (silo_id) silo_id, ROUND(temperature_c::numeric,1) AS \"Temp °C\", ROUND(humidity_percent::numeric,1) AS \"RH %\", time AS \"Last Reading\", CASE WHEN temperature_c > 30 OR humidity_percent > 75 THEN 'ALERT' ELSE 'OK' END AS \"Status\" FROM telemetry_silosensorreading ORDER BY silo_id, time DESC",
+          "format": "table"
+        }
+      ],
+      "options": { "sortBy": [{ "displayName": "Status", "desc": true }] }
+    }
+  ]
+}
