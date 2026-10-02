@@ -16,10 +16,10 @@ const COMMODITIES = [
 ];
 
 const SILOS = [
-  { value: "A-04", label: "Silo A-04 · Yellow Maize" },
-  { value: "A-01", label: "Silo A-01 · Yellow Maize" },
-  { value: "B-02", label: "Silo B-02 · Soybeans" },
-  { value: "B-05", label: "Silo B-05 · Yellow Maize" },
+  { value: "1", label: "Silo A-04 · Tamale Central Depot" },
+  { value: "2", label: "Silo A-01 · Kumasi Grain Hub" },
+  { value: "3", label: "Silo B-02 · Techiman Aggregation Centre" },
+  { value: "4", label: "Silo B-05 · Sunyani Regional Store" },
 ];
 
 function computeGrade(mc: number, fm: number, bg: number, pest: boolean) {
@@ -107,6 +107,7 @@ export default function IntakePage() {
   const [pest, setPest]           = useState(false);
   const [silo, setSilo]           = useState("A-04");
   const [saved, setSaved]         = useState(false);
+  const [recordError, setRecordError] = useState("");
   const [receiptHash, setReceiptHash] = useState<string | undefined>();
 
   const grossNum    = parseFloat(gross)    || 0;
@@ -119,6 +120,7 @@ export default function IntakePage() {
   const withinLimits = grade !== null;
 
   const handleRecord = useCallback(async () => {
+    setRecordError("");
     const payload = {
       farmer_id:        username ?? "UNKNOWN",
       commodity,
@@ -140,6 +142,12 @@ export default function IntakePage() {
         setTimeout(() => setSaved(false), 3000);
         return;
       }
+
+      const data = await res.json().catch(() => ({}));
+      const detail = typeof data?.detail === "string" ? data.detail : "";
+      const validation = Object.values(data).flat().join(" ");
+      setRecordError(detail || validation || "The consignment could not be recorded.");
+      return;
     } catch {
       // offline — fall through to Dexie
     }
@@ -294,9 +302,11 @@ export default function IntakePage() {
           <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px]">ENTER</kbd>
         </span>
         <div className="flex items-center gap-3 ml-auto">
+          {recordError && <span className="text-xs text-critical">{recordError}</span>}
           {saved && (
             <span className="flex items-center gap-1.5 text-xs text-success">
-              <CheckCircle2 className="h-3.5 w-3.5" /> Saved locally · pending sync
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              {receiptHash ? "Saved to registry" : "Saved locally · pending sync"}
             </span>
           )}
           <Button size="lg" onClick={handleRecord} className="font-bold">
