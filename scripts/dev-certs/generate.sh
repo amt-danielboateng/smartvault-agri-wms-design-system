@@ -31,7 +31,7 @@ if [ ! -f "$MQTT_DIR/server.crt" ] || [ ! -f "$MQTT_DIR/server.key" ]; then
   openssl req -new -key "$MQTT_DIR/server.key" -out "$MQTT_DIR/server.csr" \
     -subj "/CN=mosquitto"
   printf '%s\n' \
-    'subjectAltName=DNS:mosquitto,DNS:localhost,IP:127.0.0.1' \
+    'subjectAltName=DNS:mosquitto,DNS:localhost,DNS:host.docker.internal,IP:127.0.0.1' \
     'extendedKeyUsage=serverAuth' > "$MQTT_DIR/server.ext"
   openssl x509 -req -in "$MQTT_DIR/server.csr" \
     -CA "$MQTT_DIR/ca.crt" -CAkey "$MQTT_DIR/ca.key" -CAcreateserial \

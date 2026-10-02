@@ -18,6 +18,8 @@ services:
 
   redis:
     image: redis:7-alpine
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
 
@@ -27,6 +29,7 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: host.docker.internal
+      REDIS_URL: redis://host.docker.internal:6379/0
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -45,6 +48,7 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: host.docker.internal
+      REDIS_URL: redis://host.docker.internal:6379/0
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -57,6 +61,7 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: host.docker.internal
+      REDIS_URL: redis://host.docker.internal:6379/0
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -71,9 +76,13 @@ services:
     build: ./services/mqtt_bridge
     env_file: .env
     environment:
+      MQTT_HOST: host.docker.internal
+      REDIS_URL: redis://host.docker.internal:6379/0
       MQTT_CA_CERT: /run/secrets/mqtt/ca.crt
       MQTT_CLIENT_CERT: /run/secrets/mqtt/bridge.crt
       MQTT_CLIENT_KEY: /run/secrets/mqtt/bridge.key
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - mosquitto
       - redis

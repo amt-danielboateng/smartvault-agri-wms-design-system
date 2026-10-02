@@ -1,5 +1,6 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.utils import timezone
 
 logger = get_task_logger(__name__)
 
@@ -13,6 +14,7 @@ def persist_reading(self, payload: dict):
     try:
         from .models import SiloSensorReading
         reading = SiloSensorReading.objects.create(
+            time=timezone.now(),
             silo_id=payload["silo_id"],
             temperature_c=float(payload["temperature_c"]),
             humidity_percent=float(payload["humidity_percent"]),
