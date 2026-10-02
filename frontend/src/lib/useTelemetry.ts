@@ -28,7 +28,8 @@ export function useTelemetry(siloIds: string[]) {
       );
       const map: Record<string, SiloReading> = {};
       results.forEach((res, i) => {
-        if (res?.results?.[0]) map[siloIds[i]] = res.results[0];
+        const rows = Array.isArray(res) ? res : res?.results ?? [];
+        if (rows[0]) map[siloIds[i]] = rows[0];
       });
       if (Object.keys(map).length > 0) {
         setReadings(map);
