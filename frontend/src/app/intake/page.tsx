@@ -105,7 +105,7 @@ export default function IntakePage() {
   const [foreign, setForeign]     = useState("0.8");
   const [broken, setBroken]       = useState("1.2");
   const [pest, setPest]           = useState(false);
-  const [silo, setSilo]           = useState("A-04");
+  const [silo, setSilo]           = useState("1");
   const [saved, setSaved]         = useState(false);
   const [recordError, setRecordError] = useState("");
   const [receiptHash, setReceiptHash] = useState<string | undefined>();
