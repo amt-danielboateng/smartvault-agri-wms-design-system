@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: timescale/timescaledb-ha:pg16-latest
+    image: timescale/timescaledb-ha:pg16
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -54,9 +54,15 @@ services:
   mqtt_bridge:
     build: ./services/mqtt_bridge
     env_file: .env
+    environment:
+      MQTT_CA_CERT: /run/secrets/mqtt/ca.crt
+      MQTT_CLIENT_CERT: /run/secrets/mqtt/bridge.crt
+      MQTT_CLIENT_KEY: /run/secrets/mqtt/bridge.key
     depends_on:
       - mosquitto
       - redis
+    volumes:
+      - ./infra/mosquitto/certs:/run/secrets/mqtt:ro
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -64,12 +70,15 @@ services:
       - "8883:8883"
     volumes:
       - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./infra/mosquitto/passwd:/mosquitto/config/passwd:ro
       - ./infra/mosquitto/certs:/mosquitto/certs:ro
       - mosquitto_data:/mosquitto/data
 
   frontend:
     build: ./frontend
     command: node server.js
+    environment:
+      HOSTNAME: 0.0.0.0
     env_file: .env
     depends_on:
       - backend
@@ -99,9 +108,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
     volumes:
-      - ./infra/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
-      - ./infra/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
-      - ./infra/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infra/grafana:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
     ports:
       - "3001:3000"

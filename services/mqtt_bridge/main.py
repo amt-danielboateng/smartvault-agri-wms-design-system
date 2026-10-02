@@ -11,6 +11,9 @@ from celery import Celery
 MQTT_HOST = os.getenv("MQTT_HOST", "mosquitto")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 8883))
 MQTT_USE_TLS = os.getenv("MQTT_USE_TLS", "true").lower() == "true"
+MQTT_CA_CERT = os.getenv("MQTT_CA_CERT", "/run/secrets/mqtt/ca.crt")
+MQTT_CLIENT_CERT = os.getenv("MQTT_CLIENT_CERT", "/run/secrets/mqtt/bridge.crt")
+MQTT_CLIENT_KEY = os.getenv("MQTT_CLIENT_KEY", "/run/secrets/mqtt/bridge.key")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
 celery_app = Celery("mqtt_bridge", broker=REDIS_URL)
@@ -40,7 +43,13 @@ def on_message(client, userdata, msg):
 def main():
     client = mqtt.Client()
     if MQTT_USE_TLS:
-        client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS)
+        client.tls_set(
+            ca_certs=MQTT_CA_CERT,
+            certfile=MQTT_CLIENT_CERT,
+            keyfile=MQTT_CLIENT_KEY,
+            cert_reqs=ssl.CERT_REQUIRED,
+            tls_version=ssl.PROTOCOL_TLS,
+        )
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
