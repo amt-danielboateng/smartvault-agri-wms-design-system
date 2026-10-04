@@ -4,6 +4,7 @@ import { RefreshCw, AlertTriangle, Warehouse, Activity, Cpu, Zap, Wind } from "l
 import { Badge, Card, CardHeader, CardTitle, CardContent } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { useTelemetry } from "@/lib/useTelemetry";
+import { TELEMETRY_REFRESH_SECONDS } from "@/lib/useTelemetry";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
 } from "recharts";
@@ -150,7 +151,7 @@ export default function TelemetryPage() {
 
   // Countdown display for auto-refresh
   useEffect(() => {
-    const t = setInterval(() => setTick(s => (s + 1) % 60), 1000);
+    const t = setInterval(() => setTick(s => (s + 1) % TELEMETRY_REFRESH_SECONDS), 1000);
     return () => clearInterval(t);
   }, []);
 
@@ -196,7 +197,7 @@ export default function TelemetryPage() {
           )}
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <RefreshCw className="h-3 w-3" />
-            Auto-refresh · {60 - tick}s
+            Auto-refresh · {TELEMETRY_REFRESH_SECONDS - tick}s
           </span>
         </div>
       </div>

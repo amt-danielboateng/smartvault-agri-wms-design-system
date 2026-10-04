@@ -9,7 +9,8 @@ export interface SiloReading {
   time:             string;
 }
 
-const POLL_MS = 60_000;
+export const TELEMETRY_REFRESH_SECONDS = 15;
+const POLL_MS = TELEMETRY_REFRESH_SECONDS * 1_000;
 
 export function useTelemetry(siloIds: string[]) {
   const [readings, setReadings] = useState<Record<string, SiloReading>>({});
@@ -21,7 +22,7 @@ export function useTelemetry(siloIds: string[]) {
     try {
       const results = await Promise.all(
         siloIds.map(id =>
-          apiFetch(`/api/telemetry/readings/?silo_id=${id}&limit=1`)
+          apiFetch(`/api/telemetry/readings/?silo_id=${id}&limit=1&_=${Date.now()}`, { cache: "no-store" })
             .then(r => r.ok ? r.json() : null)
             .catch(() => null)
         )
@@ -42,10 +43,10 @@ export function useTelemetry(siloIds: string[]) {
 
   const fetchProfile = useCallback(async (siloId: string) => {
     try {
-      const res = await apiFetch(`/api/telemetry/readings/?silo_id=${siloId}&limit=96`);
+      const res = await apiFetch(`/api/telemetry/readings/?silo_id=${siloId}&limit=96&_=${Date.now()}`, { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
-        setProfile(data.results ?? []);
+        setProfile(Array.isArray(data) ? data : data.results ?? []);
       }
     } catch {
       // keep existing profile
