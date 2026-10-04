@@ -23,7 +23,6 @@ It connects warehouse intake operations, commodity grading, electronic warehouse
 | Queue and cache | Redis, Celery | Background jobs, synchronization, notifications |
 | IoT broker | Eclipse Mosquitto | Secure MQTT telemetry ingestion |
 | Edge firmware | ESP32 C++ and MicroPython | Temperature and humidity sensor publishing |
-| Observability | Prometheus and Grafana | Metrics and operational dashboards |
 
 ## Run Locally
 
@@ -46,9 +45,6 @@ Open the application at:
 
 - `https://localhost` - frontend and API through Nginx
 - `http://localhost:3000` - direct frontend access for UI testing
-- `http://localhost:3001` - Grafana
-- `http://localhost:9090` - Prometheus
-
 Port `443` is the normal application entry point. Nginx routes `/` to Next.js and `/api/` to Django. The database, Redis, and MQTT services should not be made public.
 
 Stop the stack with:
@@ -99,7 +95,7 @@ apps/                 ESP32 and MicroPython firmware
 backend/              Django API and background task configuration
 data-corpus/          Pilot fixtures and seed data
 frontend/             Next.js operator application
-infra/                Nginx, Mosquitto, Prometheus, and Grafana configuration
+infra/                Nginx and Mosquitto configuration
 scripts/dev-certs/    Local certificate bootstrap
 services/mqtt_bridge/ MQTT-to-Celery telemetry bridge
 tokens/               Design token sources

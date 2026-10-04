@@ -6,7 +6,7 @@ mimicking IoT nodes deployed inside grain silos across Ghana's agricultural belt
 ## What it tests
 
 ```
-simulator  →  Mosquitto (port 1883)  →  mqtt_bridge  →  Celery  →  TimescaleDB
+  simulator  →  Mosquitto (port 8883)  →  mqtt_bridge  →  Celery  →  TimescaleDB
                                                        ↓
                                           check_spoilage_thresholds
                                                        ↓
@@ -36,7 +36,9 @@ pip install -r requirements.txt
 
 ## Configuration
 
-The simulator reads from your project's root `.env`. The only values it uses are:
+The simulator reads from your project's root `.env`. When run from the host,
+override `MQTT_HOST` because the Docker-only hostname `mosquitto` is not
+resolvable outside Docker. The supported configuration values are:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -55,8 +57,9 @@ The simulator reads from your project's root `.env`. The only values it uses are
 ## Usage
 
 ```bash
-# All silos in NORMAL mode, one reading every 30 seconds
-python simulator.py
+# Host-based local test using the plain MQTT listener
+MQTT_HOST=localhost MQTT_PORT=1883 MQTT_USE_TLS=false \
+MQTT_USERNAME=bridge MQTT_PASSWORD=bridge-local python simulator.py
 
 # Faster ticks for rapid testing
 python simulator.py --interval 5
@@ -117,7 +120,8 @@ Changes take effect on the next tick — no restart needed.
 
 ### 1. Baseline health check
 Start all silos in `NORMAL`. Open `GET /api/telemetry/readings/` and confirm
-readings arrive. Open the Grafana `silo_telemetry` dashboard to see live charts.
+readings arrive. The frontend telemetry screen refreshes live readings every
+60 seconds.
 
 ### 2. Spoilage alert pipeline
 Set `SILO-TAM-01` to `CRITICAL`. Within one publish interval:
@@ -133,7 +137,7 @@ a warning about the stale silo.
 
 ### 4. Day/night temperature cycle
 Run with `--interval 5` and leave all silos in `NORMAL` for a few minutes.
-Watch temperatures rise and fall on the Grafana chart — they follow a
+Watch temperatures rise and fall on the telemetry screen — they follow a
 realistic sinusoidal cycle (peak ~14:00 local, trough ~04:00 local).
 
 ### 5. Recovery after incident

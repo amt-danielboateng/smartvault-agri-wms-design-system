@@ -31,6 +31,11 @@ const SILO_SEEDS: SiloSeed[] = [
   { id:"B-04", commodity:"Paddy Rice",   tempC:26.4, rh:65, aeration:"Active", fillPct:79, status:"normal" },
   { id:"B-05", commodity:"Yellow Maize", tempC:25.8, rh:68, aeration:"Idle",   fillPct:52, status:"normal" },
   { id:"B-06", commodity:"White Maize",  tempC:26.1, rh:62, aeration:"Active", fillPct:64, status:"normal" },
+  { id:"SILO-KMS-01", commodity:"Maize (White Dent)", tempC:27.5, rh:63, aeration:"Active", fillPct:68, status:"normal" },
+  { id:"SILO-KMS-02", commodity:"Soya Bean",          tempC:26.7, rh:62, aeration:"Idle",   fillPct:61, status:"normal" },
+  { id:"SILO-SUY-01", commodity:"Cowpea",              tempC:27.7, rh:66, aeration:"Active", fillPct:74, status:"normal" },
+  { id:"SILO-TAM-01", commodity:"Paddy Rice",          tempC:29.8, rh:68, aeration:"Active", fillPct:79, status:"normal" },
+  { id:"SILO-TEK-01", commodity:"Maize (White Dent)", tempC:27.0, rh:64, aeration:"Idle",   fillPct:56, status:"normal" },
 ];
 
 const SILO_IDS = SILO_SEEDS.map(s => s.id);
