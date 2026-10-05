@@ -20,22 +20,10 @@ interface SiloSeed {
 }
 
 const SILO_SEEDS: SiloSeed[] = [
-  { id:"A-01", commodity:"Yellow Maize", tempC:25.1, rh:62, aeration:"Active", fillPct:82, status:"normal" },
-  { id:"A-02", commodity:"Soybeans",     tempC:24.4, rh:58, aeration:"Idle",   fillPct:68, status:"normal" },
-  { id:"A-03", commodity:"Yellow Maize", tempC:31.8, rh:74, aeration:"Active", fillPct:91, status:"critical" },
-  { id:"A-04", commodity:"Yellow Maize", tempC:26.2, rh:63, aeration:"Active", fillPct:57, status:"normal" },
-  { id:"A-05", commodity:"Paddy Rice",   tempC:25.7, rh:61, aeration:"Idle",   fillPct:76, status:"normal" },
-  { id:"A-06", commodity:"Sorghum",      tempC:24.9, rh:56, aeration:"Idle",   fillPct:44, status:"normal" },
-  { id:"B-01", commodity:"White Maize",  tempC:26.8, rh:64, aeration:"Active", fillPct:87, status:"normal" },
-  { id:"B-02", commodity:"Soybeans",     tempC:25.3, rh:59, aeration:"Idle",   fillPct:71, status:"normal" },
-  { id:"B-03", commodity:"Sorghum",      tempC:24.7, rh:57, aeration:"Idle",   fillPct:63, status:"normal" },
-  { id:"B-04", commodity:"Paddy Rice",   tempC:26.4, rh:65, aeration:"Active", fillPct:79, status:"normal" },
-  { id:"B-05", commodity:"Yellow Maize", tempC:25.8, rh:68, aeration:"Idle",   fillPct:52, status:"normal" },
-  { id:"B-06", commodity:"White Maize",  tempC:26.1, rh:62, aeration:"Active", fillPct:64, status:"normal" },
   { id:"SILO-KMS-01", commodity:"Maize (White Dent)", tempC:27.5, rh:63, aeration:"Active", fillPct:68, status:"normal" },
   { id:"SILO-KMS-02", commodity:"Soya Bean",          tempC:26.7, rh:62, aeration:"Idle",   fillPct:61, status:"normal" },
-  { id:"SILO-SUY-01", commodity:"Cowpea",              tempC:27.7, rh:66, aeration:"Active", fillPct:74, status:"normal" },
-  { id:"SILO-TAM-01", commodity:"Paddy Rice",          tempC:29.8, rh:68, aeration:"Active", fillPct:79, status:"normal" },
+  { id:"SILO-SUY-01", commodity:"Cowpea",             tempC:27.7, rh:66, aeration:"Active", fillPct:74, status:"normal" },
+  { id:"SILO-TAM-01", commodity:"Paddy Rice",         tempC:29.8, rh:68, aeration:"Active", fillPct:79, status:"normal" },
   { id:"SILO-TEK-01", commodity:"Maize (White Dent)", tempC:27.0, rh:64, aeration:"Idle",   fillPct:56, status:"normal" },
 ];
 

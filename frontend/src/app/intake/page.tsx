@@ -16,10 +16,11 @@ const COMMODITIES = [
 ];
 
 const SILOS = [
-  { value: "1", label: "Silo A-04 · Tamale Central Depot" },
-  { value: "2", label: "Silo A-01 · Kumasi Grain Hub" },
-  { value: "3", label: "Silo B-02 · Techiman Aggregation Centre" },
-  { value: "4", label: "Silo B-05 · Sunyani Regional Store" },
+  { value: "SILO-KMS-01", label: "SILO-KMS-01 · Kumasi Central Grain Store · Maize (White Dent)" },
+  { value: "SILO-KMS-02", label: "SILO-KMS-02 · Kumasi Central Grain Store · Soya Bean" },
+  { value: "SILO-SUY-01", label: "SILO-SUY-01 · Sunyani Aggregation Hub · Cowpea" },
+  { value: "SILO-TAM-01", label: "SILO-TAM-01 · Tamale Northern Silo · Paddy Rice" },
+  { value: "SILO-TEK-01", label: "SILO-TEK-01 · Techiman Commodity Center · Maize (White Dent)" },
 ];
 
 function computeGrade(mc: number, fm: number, bg: number, pest: boolean) {
